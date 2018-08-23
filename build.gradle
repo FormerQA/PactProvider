@@ -9,7 +9,8 @@ buildscript {
     }
     dependencies {
         classpath("org.springframework.boot:spring-boot-gradle-plugin:1.5.12.RELEASE")
-        classpath("au.com.dius:pact-jvm-provider-gradle_2.10:2.2.1")
+        classpath("au.com.dius:pact-jvm-consumer-junit_2.11:3.5.8")
+        classpath("au.com.dius:pact-jvm-provider-gradle_2.11:3.5.8")
     }
 }
 
@@ -32,22 +33,29 @@ dependencies {
     testCompile("au.com.dius:pact-jvm-provider_2.10:2.2.1")
 }
 
-pact {
-    serviceProviders {
-        dummyProvider {
-            protocol ='http'
-            host = 'localhost'
-            port = 8080
-            hasPactWith("dummy-consumer") {
-                pactFile = file("../pacts/dummy-consumer-dummy-provider.json")
-            }
-        }
-    }
-}
 
 sourceCompatibility = JavaVersion.VERSION_1_8
 targetCompatibility = JavaVersion.VERSION_1_8
 
 task wrapper(type: Wrapper) {
     gradleVersion = '2.1'
+}
+
+pact {
+    serviceProviders {
+        test_provider {
+            protocol = 'http'
+            host = 'localhost'
+            port = 8080
+            hasPactWith('test_consumer') {
+                pactFile = file('src/test/resources/test_consumer-test_provider.json')
+
+            }
+        }
+        reports {
+            defaultReports()
+            markdown
+            json
+        }
+    }
 }

@@ -1,0 +1,13 @@
+{
+    "metaData": {
+        "date": "2018-08-22T16:33:54+0000",
+        "pactJvmVersion": "3.5.8",
+        "reportFormat": "0.0.0"
+    },
+    "provider": {
+        "name": "reports"
+    },
+    "execution": [
+        
+    ]
+}
