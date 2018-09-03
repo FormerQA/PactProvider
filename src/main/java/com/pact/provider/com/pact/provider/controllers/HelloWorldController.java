@@ -10,12 +10,12 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/hello-world")
 public class HelloWorldController {
 
-    private static final String template = "Welcome to %s!";
+    private static final String template = "Welcome %s!";
     private final AtomicLong counter = new AtomicLong();
 
     @GetMapping
     public @ResponseBody
-    Greeting sayHello(@RequestParam(value="name", required=false, defaultValue="PACT") String name) {
+    Greeting sayHello(@RequestParam(value="name", required=false) String name) {
         return new Greeting(counter.incrementAndGet(), String.format(template, name));
     }
 
