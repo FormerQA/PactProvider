@@ -1,0 +1,97 @@
+{
+    "metaData": {
+        "date": "2018-09-04T05:03:41+0000",
+        "pactJvmVersion": "3.5.8",
+        "reportFormat": "0.0.0"
+    },
+    "provider": {
+        "name": "test_provider"
+    },
+    "execution": [
+        {
+            "consumer": {
+                "name": "PactConsumerOne",
+                "source": {
+                    "file": {
+                        "directory": false,
+                        "file": true,
+                        "freeSpace": 398969040896,
+                        "invalid": false,
+                        "canonicalPath": "/Users/z062792/pactconf/PactProvider/src/test/resources/PactConsumerOne-PactProvider.json",
+                        "usableSpace": 398706896896,
+                        "hidden": false,
+                        "totalSpace": 499055067136,
+                        "path": "/Users/z062792/pactconf/PactProvider/src/test/resources/PactConsumerOne-PactProvider.json",
+                        "name": "PactConsumerOne-PactProvider.json",
+                        "prefixLength": 1,
+                        "absolute": true,
+                        "absolutePath": "/Users/z062792/pactconf/PactProvider/src/test/resources/PactConsumerOne-PactProvider.json",
+                        "parent": "/Users/z062792/pactconf/PactProvider/src/test/resources"
+                    }
+                }
+            },
+            "interactions": [
+                {
+                    "interaction": {
+                        "description": "Request from Pact Consumer",
+                        "request": {
+                            "method": "GET",
+                            "path": "/hello-world"
+                        },
+                        "response": {
+                            "status": 200,
+                            "headers": {
+                                "Content-Type": "application/json; charset=UTF-8"
+                            },
+                            "body": {
+                                "id": 100,
+                                "content": "string"
+                            },
+                            "matchingRules": {
+                                "body": {
+                                    "$.id": {
+                                        "matchers": [
+                                            {
+                                                "match": "number"
+                                            }
+                                        ],
+                                        "combine": "AND"
+                                    },
+                                    "$.content": {
+                                        "matchers": [
+                                            {
+                                                "match": "type"
+                                            }
+                                        ],
+                                        "combine": "AND"
+                                    }
+                                }
+                            },
+                            "generators": {
+                                "body": {
+                                    "$.id": {
+                                        "type": "RandomInt",
+                                        "min": 0,
+                                        "max": 2147483647
+                                    },
+                                    "$.content": {
+                                        "type": "RandomString",
+                                        "size": 20
+                                    }
+                                }
+                            }
+                        },
+                        "providerStates": [
+                            {
+                                "name": "Testing for basic contract"
+                            }
+                        ]
+                    },
+                    "verification": {
+                        "result": "OK"
+                    }
+                }
+            ]
+        }
+    ]
+}
