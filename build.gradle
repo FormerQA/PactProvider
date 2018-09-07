@@ -56,6 +56,15 @@ pact {
 
             }
         }
+        test_provider {
+            protocol = 'http'
+            host = 'localhost'
+            port = 8082
+            hasPactWith('PactConsumerTwo') {
+                pactFile = file('src/test/resources/PactConsumerTwo-PactProvider.json')
+
+            }
+        }
         reports {
             defaultReports()
             markdown

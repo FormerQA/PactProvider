@@ -7,10 +7,13 @@
     },
     "interactions": [
         {
-            "description": "Request from Pact Consumer",
+            "description": "Request from Pact Consumer One",
             "request": {
                 "method": "GET",
-                "path": "/hello-world"
+                "path": "/hello-world",
+                "headers": {
+                    "name": "pravitha"
+                }
             },
             "response": {
                 "status": 200,
@@ -54,12 +57,7 @@
                         }
                     }
                 }
-            },
-            "providerStates": [
-                {
-                    "name": "Testing for basic contract"
-                }
-            ]
+            }
         }
     ],
     "metadata": {
