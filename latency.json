@@ -1,0 +1,86 @@
+{
+	"version": "1.0.0",
+	"title": "What happens when we try to fetch consumer service with a latency in provider service?",
+	"description": "Add latency to provider service to see how the consumer service behaves",
+	"tags": [
+		"demo",
+		"chaos",
+		"springboot"
+	],
+	"steady-state-hypothesis": {
+		"title": "When provider has latency, client returns hello",
+		"probes": [{
+			"name": "client-service-is-up",
+			"provider": {
+				"type": "http",
+				"url": "http://localhost:8081/health"
+			},
+			"tolerance": 200,
+			"type": "probe"
+			},
+			{
+				"name": "provider-service-is-up",
+				"provider": {
+					"type": "http",
+					"url": "http://localhost:8082/health"
+				},
+				"tolerance": 200,
+				"type": "probe"
+			},
+			{
+				"name": "client-service-returns-hello",
+				"provider": {
+					"type": "http",
+					"url": "http://localhost:8081/hello?name=Sunita"
+				},
+				"tolerance": 200,
+				"type": "probe"
+			}]
+	},
+	"method": [{
+			"name": "enable_chaosmonkey",
+			"provider": {
+				"arguments": {
+					"base_url": "http://localhost:8082"
+				},
+				"func": "enable_chaosmonkey",
+				"module": "chaosspring.actions",
+				"type": "python"
+			},
+			"type": "action"
+		},
+		{
+			"name": "configure_assaults",
+			"provider": {
+				"arguments": {
+					"base_url": "http://localhost:8082",
+					"assaults_configuration": {
+						"level": 1,
+						"latencyRangeStart": 10000,
+						"latencyRangeEnd": 20000,
+						"latencyActive": true,
+						"exceptionsActive": false,
+						"killApplicationActive": false,
+						"restartApplicationActive": false
+					}
+				},
+				"func": "change_assaults_configuration",
+				"module": "chaosspring.actions",
+				"type": "python"
+			},
+			"type": "action"
+		}
+	],
+	"rollbacks": [{
+		"name": "disable_chaosmonkey",
+		"provider": {
+			"arguments": {
+				"base_url": "http://localhost:8082"
+			},
+			"func": "disable_chaosmonkey",
+			"module": "chaosspring.actions",
+			"type": "python"
+		},
+		"type": "action"
+	}]
+}

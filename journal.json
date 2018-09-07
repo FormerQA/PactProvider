@@ -1,0 +1,339 @@
+{
+  "chaoslib-version": "0.20.1",
+  "platform": "Darwin-16.7.0-x86_64-i386-64bit",
+  "node": "a45e60ebade3",
+  "experiment": {
+    "version": "1.0.0",
+    "title": "What happens when we try to fetch client service with an exception in provider service?",
+    "description": "Add an exception to provider service to see how the client service behaves",
+    "tags": [
+      "demo",
+      "chaos",
+      "springboot"
+    ],
+    "steady-state-hypothesis": {
+      "title": "System responds with the right exception",
+      "probes": [
+        {
+          "name": "client-service-is-up",
+          "provider": {
+            "type": "http",
+            "url": "http://localhost:8081/health"
+          },
+          "tolerance": 200,
+          "type": "probe"
+        },
+        {
+          "name": "provider-service-is-up",
+          "provider": {
+            "type": "http",
+            "url": "http://localhost:8082/health"
+          },
+          "tolerance": 200,
+          "type": "probe"
+        },
+        {
+          "name": "client-service-returns-hello",
+          "provider": {
+            "type": "http",
+            "url": "http://localhost:8081/hello?name=Sunita"
+          },
+          "tolerance": 200,
+          "type": "probe"
+        }
+      ]
+    },
+    "method": [
+      {
+        "name": "enable_chaosmonkey",
+        "provider": {
+          "arguments": {
+            "base_url": "http://localhost:8082"
+          },
+          "func": "enable_chaosmonkey",
+          "module": "chaosspring.actions",
+          "type": "python"
+        },
+        "type": "action"
+      },
+      {
+        "name": "configure_assaults",
+        "provider": {
+          "arguments": {
+            "base_url": "http://localhost:8082/",
+            "assaults_configuration": {
+              "level": 1,
+              "latencyRangeStart": 10000,
+              "latencyRangeEnd": 20000,
+              "latencyActive": false,
+              "exceptionsActive": true,
+              "killApplicationActive": false,
+              "restartApplicationActive": false
+            }
+          },
+          "func": "change_assaults_configuration",
+          "module": "chaosspring.actions",
+          "type": "python"
+        },
+        "type": "action"
+      }
+    ],
+    "rollbacks": [
+      {
+        "name": "disable_chaosmonkey",
+        "provider": {
+          "arguments": {
+            "base_url": "http://localhost:8082/"
+          },
+          "func": "disable_chaosmonkey",
+          "module": "chaosspring.actions",
+          "type": "python"
+        },
+        "type": "action"
+      }
+    ],
+    "dry": false
+  },
+  "start": "2018-09-05T09:50:08.436076",
+  "status": "completed",
+  "steady_states": {
+    "before": {
+      "steady_state_met": true,
+      "probes": [
+        {
+          "activity": {
+            "name": "client-service-is-up",
+            "provider": {
+              "type": "http",
+              "url": "http://localhost:8081/health"
+            },
+            "tolerance": 200,
+            "type": "probe"
+          },
+          "output": {
+            "status": 200,
+            "headers": {
+              "X-Application-Context": "application:chaos-monkey:8081",
+              "Content-Type": "application/vnd.spring-boot.actuator.v1+json;charset=UTF-8",
+              "Transfer-Encoding": "chunked",
+              "Date": "Wed, 05 Sep 2018 09:50:08 GMT"
+            },
+            "body": "{\"status\":\"UP\"}"
+          },
+          "status": "succeeded",
+          "start": "2018-09-05T09:50:08.437362",
+          "end": "2018-09-05T09:50:08.467639",
+          "duration": 0.030277,
+          "tolerance_met": true
+        },
+        {
+          "activity": {
+            "name": "provider-service-is-up",
+            "provider": {
+              "type": "http",
+              "url": "http://localhost:8082/health"
+            },
+            "tolerance": 200,
+            "type": "probe"
+          },
+          "output": {
+            "status": 200,
+            "headers": {
+              "X-Application-Context": "application:chaos-monkey:8082",
+              "Content-Type": "application/vnd.spring-boot.actuator.v1+json;charset=UTF-8",
+              "Transfer-Encoding": "chunked",
+              "Date": "Wed, 05 Sep 2018 09:50:08 GMT"
+            },
+            "body": "{\"status\":\"UP\"}"
+          },
+          "status": "succeeded",
+          "start": "2018-09-05T09:50:08.468260",
+          "end": "2018-09-05T09:50:08.480692",
+          "duration": 0.012432,
+          "tolerance_met": true
+        },
+        {
+          "activity": {
+            "name": "client-service-returns-hello",
+            "provider": {
+              "type": "http",
+              "url": "http://localhost:8081/hello?name=Sunita"
+            },
+            "tolerance": 200,
+            "type": "probe"
+          },
+          "output": {
+            "status": 200,
+            "headers": {
+              "X-Application-Context": "application:chaos-monkey:8081",
+              "Content-Type": "application/json;charset=UTF-8",
+              "Transfer-Encoding": "chunked",
+              "Date": "Wed, 05 Sep 2018 09:50:08 GMT"
+            },
+            "body": "{\"id\":7,\"content\":\"Welcome Sunita!\"}"
+          },
+          "status": "succeeded",
+          "start": "2018-09-05T09:50:08.481002",
+          "end": "2018-09-05T09:50:08.508057",
+          "duration": 0.027055,
+          "tolerance_met": true
+        }
+      ]
+    },
+    "after": {
+      "steady_state_met": true,
+      "probes": [
+        {
+          "activity": {
+            "name": "client-service-is-up",
+            "provider": {
+              "type": "http",
+              "url": "http://localhost:8081/health"
+            },
+            "tolerance": 200,
+            "type": "probe"
+          },
+          "output": {
+            "status": 200,
+            "headers": {
+              "X-Application-Context": "application:chaos-monkey:8081",
+              "Content-Type": "application/vnd.spring-boot.actuator.v1+json;charset=UTF-8",
+              "Transfer-Encoding": "chunked",
+              "Date": "Wed, 05 Sep 2018 09:50:08 GMT"
+            },
+            "body": "{\"status\":\"UP\"}"
+          },
+          "status": "succeeded",
+          "start": "2018-09-05T09:50:08.555889",
+          "end": "2018-09-05T09:50:08.570842",
+          "duration": 0.014953,
+          "tolerance_met": true
+        },
+        {
+          "activity": {
+            "name": "provider-service-is-up",
+            "provider": {
+              "type": "http",
+              "url": "http://localhost:8082/health"
+            },
+            "tolerance": 200,
+            "type": "probe"
+          },
+          "output": {
+            "status": 200,
+            "headers": {
+              "X-Application-Context": "application:chaos-monkey:8082",
+              "Content-Type": "application/vnd.spring-boot.actuator.v1+json;charset=UTF-8",
+              "Transfer-Encoding": "chunked",
+              "Date": "Wed, 05 Sep 2018 09:50:08 GMT"
+            },
+            "body": "{\"status\":\"UP\"}"
+          },
+          "status": "succeeded",
+          "start": "2018-09-05T09:50:08.571268",
+          "end": "2018-09-05T09:50:08.585515",
+          "duration": 0.014247,
+          "tolerance_met": true
+        },
+        {
+          "activity": {
+            "name": "client-service-returns-hello",
+            "provider": {
+              "type": "http",
+              "url": "http://localhost:8081/hello?name=Sunita"
+            },
+            "tolerance": 200,
+            "type": "probe"
+          },
+          "output": {
+            "status": 200,
+            "headers": {
+              "X-Application-Context": "application:chaos-monkey:8081",
+              "Content-Type": "application/json;charset=UTF-8",
+              "Transfer-Encoding": "chunked",
+              "Date": "Wed, 05 Sep 2018 09:50:08 GMT"
+            },
+            "body": "{\"id\":0,\"content\":\"Sorry - there's no one to welcome you Sunita , try later!\"}"
+          },
+          "status": "succeeded",
+          "start": "2018-09-05T09:50:08.585877",
+          "end": "2018-09-05T09:50:08.651602",
+          "duration": 0.065725,
+          "tolerance_met": true
+        }
+      ]
+    }
+  },
+  "run": [
+    {
+      "activity": {
+        "name": "enable_chaosmonkey",
+        "provider": {
+          "arguments": {
+            "base_url": "http://localhost:8082"
+          },
+          "func": "enable_chaosmonkey",
+          "module": "chaosspring.actions",
+          "type": "python"
+        },
+        "type": "action"
+      },
+      "output": "",
+      "status": "succeeded",
+      "start": "2018-09-05T09:50:08.508672",
+      "end": "2018-09-05T09:50:08.531950",
+      "duration": 0.023278
+    },
+    {
+      "activity": {
+        "name": "configure_assaults",
+        "provider": {
+          "arguments": {
+            "base_url": "http://localhost:8082/",
+            "assaults_configuration": {
+              "level": 1,
+              "latencyRangeStart": 10000,
+              "latencyRangeEnd": 20000,
+              "latencyActive": false,
+              "exceptionsActive": true,
+              "killApplicationActive": false,
+              "restartApplicationActive": false
+            }
+          },
+          "func": "change_assaults_configuration",
+          "module": "chaosspring.actions",
+          "type": "python"
+        },
+        "type": "action"
+      },
+      "output": "",
+      "status": "succeeded",
+      "start": "2018-09-05T09:50:08.532182",
+      "end": "2018-09-05T09:50:08.555310",
+      "duration": 0.023128
+    }
+  ],
+  "rollbacks": [
+    {
+      "activity": {
+        "name": "disable_chaosmonkey",
+        "provider": {
+          "arguments": {
+            "base_url": "http://localhost:8082/"
+          },
+          "func": "disable_chaosmonkey",
+          "module": "chaosspring.actions",
+          "type": "python"
+        },
+        "type": "action"
+      },
+      "output": "",
+      "status": "succeeded",
+      "start": "2018-09-05T09:50:08.652603",
+      "end": "2018-09-05T09:50:08.672984",
+      "duration": 0.020381
+    }
+  ],
+  "end": "2018-09-05T09:50:08.673012",
+  "duration": 0.25971126556396484
+}
